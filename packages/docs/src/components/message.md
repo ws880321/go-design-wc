@@ -24,12 +24,12 @@
 
 ## 手动关闭的 notice
 
-用来显示「成功、警告、消息、错误」类的操作反馈。
-
-当需要自定义更多属性时，Message 也可以接收一个对象为参数。 比如，设置 type 字段可以定义不同的状态，默认为 info。 此时正文内容以 message 的值传入。
-同时，我们也为 Message 的各种 type 注册了方法，可以在不传入 type 字段的情况下像 open4 那样直接调用。
-
 <go-button type="border" id="btn-n">notice</go-button>
+```html
+message.notice({content: '常用于主动操作后的反馈提示。 与 Notification 的区别是后者更多用于系统级通知的被动提醒。',onClose:()=>{
+                console.log('callback');
+         }})
+```
 <script setup>
 import { onMounted } from 'vue';
 import { message } from '@wdslib/go-design'
@@ -39,8 +39,8 @@ onMounted(()=>{
         message.success('这是测试内容')
     })
     document.getElementById('btn-n').addEventListener('click', ()=>{
-         message.notice({content: '常用于主动操作后的反馈提示。 与 Notification 的区别是后者更多用于系统级通知的被动提醒。 与 Notification 的区别是后者更多用于系统级通知的被动提醒。11',onClose:()=>{
-                console.log(3);
+         message.notice({content: '常用于主动操作后的反馈提示。 与 Notification 的区别是后者更多用于系统级通知的被动提醒。',onClose:()=>{
+                console.log('callback');
          }})
     })
     document.getElementById('btn-s').addEventListener('click', ()=>{
