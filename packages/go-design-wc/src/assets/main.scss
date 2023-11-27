@@ -1,0 +1,141 @@
+@use 'sass:map';
+@use 'sass:math';
+
+$types: primary, success, warning, danger, error, info;
+
+$color-white: #ffffff;
+$color-black: #000000;
+
+$colors: (
+    'white': #ffffff,
+    'black': #000000,
+    'primary': (
+        'base': #409eff
+    ),
+    'success': (
+        'base': #67c23a
+    ),
+    'warning': (
+        'base': #e6a23c
+    ),
+    'danger': (
+        'base': #f56c6c
+    ),
+    'error': (
+        'base': #f56c6c
+    ),
+    'info': (
+        'base': #909399
+    )
+);
+
+@mixin set-color-mix-level($type, $number, $mode: 'light', $mix-color: $color-white) {
+    $colors: map.deep-merge(
+        (
+            $type: (
+                '#{$mode}-#{$number}':
+                    mix(
+                        $mix-color,
+                        map.get($colors, $type, 'base'),
+                        math.percentage(math.div($number, 10))
+                    )
+            )
+        ),
+        $colors
+    ) !global;
+}
+
+@each $type in $types {
+    @for $i from 1 through 9 {
+        @include set-color-mix-level($type, $i, 'light', $color-white);
+    }
+}
+
+// --el-color-primary-dark-2
+@each $type in $types {
+    @include set-color-mix-level($type, 2, 'dark', $color-black);
+}
+
+@function joinVarName($list) {
+    $name: '--Go';
+    @each $item in $list {
+        @if $item != '' {
+            $name: $name + '-' + $item;
+        }
+    }
+    @return $name;
+}
+
+@mixin set-css-var-value($name, $value) {
+    #{joinVarName($name)}: #{$value};
+}
+
+:root {
+    color-scheme: light;
+    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+        '微软雅黑', Arial, sans-serif;
+    --go-font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+    --go-color-white: #ffffff;
+    --go-color-black: #000000;
+    @each $type in ($types) {
+        $colorTmp: map.get($colors, $type, 'base');
+        @include set-css-var-value(('color', $type), $colorTmp);
+
+        @each $i in (1, 2, 3, 4, 5, 6, 7, 8, 9) {
+            $colorLight: map.get($colors, $type, 'light-#{$i}');
+            @include set-css-var-value(('color', $type, 'light', $i), $colorLight);
+        }
+
+        @include set-css-var-value(('color', $type, 'dark-2'), map.get($colors, $type, 'dark-2'));
+    }
+    --go-text-color-primary: #0c6dff;
+    --go-text-color-regular: #606266;
+    --go-text-color-secondary: #909399;
+    --go-text-color-placeholder: #a8abb2;
+    --go-text-color-disabled: #c0c4cc;
+
+    --go-fill-color: #f0f2f5;
+    --go-fill-color-light: #f5f7fa;
+    --go-fill-color-lighter: #fafafa;
+    --go-fill-color-extra-light: #fafcff;
+
+    --go-overlay-color: rgba(0, 0, 0, 0.8);
+    --go-overlay-color-light: rgba(0, 0, 0, 0.7);
+    --go-overlay-color-lighter: rgba(0, 0, 0, 0.5);
+    --go-mask-color: rgba(255, 255, 255, 0.9);
+    --go-mask-color-extra-light: rgba(255, 255, 255, 0.3);
+
+    --go-border-color: #dcdfe6;
+    --go-border-color-light: #e4e7ed;
+    --go-border-color-lighter: #ebeef5;
+    --go-border-color-extra-light: #f2f6fc;
+    --go-shadow: 0px 12px 32px 4px rgba(0, 0, 0, 0.04), 0px 8px 20px rgba(0, 0, 0, 0.08);
+    --go-box-shadow: 0px 12px 32px 4px rgba(0, 0, 0, 0.04), 0px 8px 20px rgba(0, 0, 0, 0.08);
+    --go-box-shadow-light: 0px 0px 12px rgba(0, 0, 0, 0.12);
+    --go-box-shadow-lighter: 0px 0px 6px rgba(0, 0, 0, 0.12);
+    --go-box-shadow-dark: 0px 16px 48px 16px rgba(0, 0, 0, 0.08), 0px 12px 32px rgba(0, 0, 0, 0.12),
+        0px 8px 16px -8px rgba(0, 0, 0, 0.16);
+    --go-font-size: 14px;
+    --go-font-size-small: 12px;
+
+    --go-timeline-node-size: 12px;
+    --go-timeline-node-size-large: 14px;
+
+    --go-border-radius: 4px;
+    --go-border-radius-medium: 8px;
+
+    --go-all-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    --go-fade-transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+    --go-fade-linear-transition: opacity 200ms linear;
+    --go-md-fade-transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1) opacity 300ms
+        cubic-bezier(0.23, 1, 0.32, 1);
+    --go-border-transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    --go-color-transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
